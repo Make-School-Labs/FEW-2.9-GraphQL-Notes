@@ -1,0 +1,11 @@
+.fancy-enter {
+  opacity: 0.01;
+}
+
+.fancy-enter.fancy-enter-active {
+  opacity: 1;
+}
+
+.fancy-leave {
+  opacity: 1;
+}
