@@ -1,0 +1,24 @@
+type Query {
+    about(name: String!, course: String!, description: String!): About
+    portfolios: [Portfolio!]!
+    portfolio(id: Int!): Portfolio
+}
+
+type Mutation {
+  post(title: String, description: String!, url: String!): Portfolio!
+  edit(id: Int!, title: String, description: String, url: String): Portfolio!
+  delete(id: Int): Portfolio!
+}
+
+type About {
+    name: String!
+    course: String!
+    description: String!
+}
+
+type Portfolio {
+    id: Int!
+    title: String!
+    description: String!
+    url: String!
+} 

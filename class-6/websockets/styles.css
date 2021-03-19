@@ -1,0 +1,21 @@
+#messages {
+	overflow: scroll;
+	border: 1px solid;
+	padding: 0.5em;
+	border-radius: 3px;
+}
+
+input {
+	display: block;
+	width: 100%; 
+	margin-bottom: 10px; 
+	padding: 0.5em;
+}
+
+#send {
+	padding: 0.5em;
+	border: 1px solid;
+	background-color: #000;
+	color: #fff;
+	border-radius: 3px;
+}

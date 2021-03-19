@@ -1,0 +1,21 @@
+{
+  "name": "koa-graphql-mongo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "pm2 start server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dataloader": "^1.4.0",
+    "dotenv": "^6.2.0",
+    "koa": "^2.7.0",
+    "koa-graphql": "^0.8.0",
+    "koa-mount": "^4.0.0",
+    "mongoose": "^5.4.15"
+  }
+}
