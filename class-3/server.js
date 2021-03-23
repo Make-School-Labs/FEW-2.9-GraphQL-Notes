@@ -2,6 +2,7 @@
 const express = require('express')
 const { graphqlHTTP } = require('express-graphql')
 const { buildSchema } = require('graphql')
+const cors = require( `cors` );
 
 const fetch = require('node-fetch') 
 
@@ -36,6 +37,7 @@ const root = {
 
 // Create an express app
 const app = express()
+app.use(cors());
 
 // Define a route for GraphQL
 app.use('/graphql', graphqlHTTP({
