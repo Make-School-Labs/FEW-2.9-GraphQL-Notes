@@ -1,17 +1,29 @@
 import React, { useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router';
-import { CREATE_LINK_MUTATION, FEED_QUERY } from './graphql-queries';
-import { LINKS_PER_PAGE } from './constants';
+import { LINKS_PER_PAGE } from '../constants';
+import { FEED_QUERY } from './LinkList';
+
+const CREATE_LINK_MUTATION = gql`
+  mutation PostMutation(
+    $description: String!
+    $url: String!
+  ) {
+    post(description: $description, url: $url) {
+      id
+      url
+      description
+    }
+  }
+`;
 
 const CreateLink = () => {
-	const history = useHistory();
+  const history = useHistory();
   const [formState, setFormState] = useState({
     description: '',
     url: ''
   });
-
-	const [createLink] = useMutation(CREATE_LINK_MUTATION, {
+  const [createLink] = useMutation(CREATE_LINK_MUTATION, {
     variables: {
       description: formState.description,
       url: formState.url
@@ -46,14 +58,13 @@ const CreateLink = () => {
     },
     onCompleted: () => history.push('/new/1')
   });
-
   return (
     <div>
       <form
         onSubmit={(e) => {
-					e.preventDefault();
-					createLink();
-				}}
+          e.preventDefault();
+          createLink();
+        }}
       >
         <div className="flex flex-column mt3">
           <input

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom'
 import Link from './Link';
-import { useQuery, gql } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import { FEED_QUERY, NEW_LINKS_SUBSCRIPTION, NEW_VOTES_SUBSCRIPTION } from './graphql-queries'
 import { LINKS_PER_PAGE } from './constants';
 
@@ -51,8 +51,7 @@ const LinkList = () => {
 		document: NEW_LINKS_SUBSCRIPTION,
 		updateQuery: (prev, { subscriptionData }) => {
 			if (!subscriptionData.data) return prev;
-			const newLink = subscriptionData.data.newLink;
-			// FIXME: 
+			const newLink = subscriptionData.data.newLink; 
 			console.log(prev)
 			const exists = prev.feed.links.find(
 				({ id }) => id === newLink.id
