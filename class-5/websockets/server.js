@@ -1,12 +1,12 @@
 // Dependencies
-const express = require('express');
-const http = require('http');
-const WebSocket = require('ws');
+const express = require('express')
+const http = require('http')
+const WebSocket = require('ws')
 
 // Define a port
-const port = 6969;
+const port = 6969
 // create a server
-const server = http.createServer(express);
+const server = http.createServer(express)
 // Open a web socket
 const wss = new WebSocket.Server({ server })
 

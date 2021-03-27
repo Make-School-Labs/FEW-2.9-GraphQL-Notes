@@ -14,8 +14,15 @@ enum Units {
 }
 
 type Weather {
-	temperature: Float!
-	description: String!
+	temperature: Float
+	description: String
+	feels_like: Float
+	temp_min: Float
+	temp_max: Float
+	pressure: Int
+	humidity: Int
+	cod: Int
+	message: String
 }
 
 type Query {
@@ -29,9 +36,24 @@ const root = {
 		const url = `https://api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${apikey}&units=${units}`
 		const res = await fetch(url)
 		const json = await res.json()
+		const cod = parseInt(json.cod)
+		const message = json.message
+
+		console.log(json)
+
+		if (cod !== 200) {
+			return { cod, message }
+		}
+		
 		const temperature = json.main.temp
 		const description = json.weather[0].description
-		return { temperature, description }
+		const feels_like = json.main.feels_like
+		const temp_min = json.main.temp_min
+		const temp_max = json.main.temp_max
+		const pressure = json.main.pressure
+		const humidity = json.main.humidity
+
+		return { temperature, description, feels_like, temp_max, temp_min, pressure, humidity, cod, message }
 	}
 }
 
