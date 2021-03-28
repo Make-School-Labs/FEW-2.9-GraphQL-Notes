@@ -1,83 +1,82 @@
-const express = require('express');
-const { graphqlHTTP } = require('express-graphql');
-const { buildSchema, execute, subscribe } = require('graphql');
-
-// Pull in some specific Apollo packages:
-const { PubSub } = require('graphql-subscriptions');
-const { SubscriptionServer } = require('subscriptions-transport-ws');
-
-// Create a server:
-const app = express();
+const { GraphQLServer, PubSub } = require('graphql-yoga')
 
 // Create a schema and a root resolver:
-const schema = buildSchema(`
-	type Book {
-		title: String!
-		author: String!
+const typeDefs = `
+	type Channel {
+		name: String!
+		posts: [Post!]!
+	}
+
+	type Post {
+		message: String!
+		date: String!
 	}
 
 	type Query {
-		books: [Book]
+		channels: [Channel!]!
+		posts(channel: String!): [Post!]!
 	}
 
 	type Mutation {
-		addBook(title: String!, author: String!): Book!
+		addChannel(name: String!): Channel!
+		addPost(channel: String!, message: String!): Post!
 	}
 
 	type Subscription {
-		newBook: Book
-	}
-`);
+		newChannel: Channel!
+		newPost: Post!
+	}`
 
 const pubsub = new PubSub();
 
-const books = [
-	{
-		title: "The Name of the Wind",
-		author: "Patrick Rothfuss",
-	},
-	{
-		title: "The Wise Man's Fear",
-		author: "Patrick Rothfuss",
-	}
+const data = [
+	{ name: 'cats', posts: [] },
+	{ name: 'dogs', posts: [] },
 ]
 
-const rootValue = {
-	books: () => {
-		return books
+const resolvers = {
+	Query: {
+		channels: () => {
+			return data
+		},
+		posts: (_, { channelName }) => {
+			return data.filter((item) => item.name === channel)[0]
+		}
 	},
-	addBook: ({ title, author }) => {
-		const book = { title, author }
-		books.push(book)
-		pubsub.publish('NEW_BOOK', { newBook: book })
-		return book
+	Mutation: {
+		addChannel: (_, { name }) => {
+			const channel = { name, posts:[] }
+			data.push(channel)
+			pubsub.publish('NEW_CHANNEL', { newChannel: channel })
+			return channel
+		},
+		addPost: (_, { channelName, message }) => {
+			const post = { message, date: new Date().toString() }
+			pubsub.publish('NEW_POST', { newPost: post })
+			date.forEach(channel => {
+				if (channel.name === channelName) {
+					channel.posts.push(post)
+				}
+			});
+		}
 	},
-	newBook: {
-		resolve: () => null,
-		subscribe: () => pubsub.asyncIterator("NEW_BOOK")
+	Subscription: {
+		newChannel: {
+			subscribe: () => pubsub.asyncIterator("NEW_CHANNEL")
+		},
+		newPost: {
+			subscribe: () => pubsub.asyncIterator('NEW_POST')
+		}
 	}
-	// Subscription: {
-	// 	newBook: {
-	// 		subscribe: () => pubsub.asyncIterator("NEW_BOOK")
-	// 	}
-	// }
-};
+}
 
-app.use('/graphql', graphqlHTTP({
-	schema,
-	rootValue,
-	graphiql: true
-}));
+const server = new GraphQLServer({
+	typeDefs,
+	resolvers,
+	context: {
+		pubsub,
+		data
+	}
+})
 
-const server = app.listen(8080, () => console.log("Server started on port 8080"));
-
-SubscriptionServer.create({ schema, rootValue, execute, subscribe }, {
-  server // Listens for 'upgrade' websocket events on the raw server
-});
-
-/*
-
-This example based one:
-https://httptoolkit.tech/blog/simple-graphql-server-without-apollo/
-
-*/
+server.start(console.log("gql node server running on local host 4000"))
