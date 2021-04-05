@@ -3,22 +3,27 @@ const express = require('express')
 const { graphqlHTTP } = require('express-graphql')
 const { buildSchema } = require('graphql')
 
+const petList = require('./petlist')
+
+console.log(petList)
+
 // Define a scheme
 const schema = buildSchema(`
 enum Species {
 	Dog
 	Cat
 	Mameshiba
+	Frog
 }
 
 type About {
   message: String!
-	species: Species
+	species: Species!
 }
 
 type Pet {
 	name: String!
-	species: String!
+	species: Species!
 }
 
 type Die {
@@ -43,13 +48,19 @@ type Roll {
 
 type Query {
   getAbout: About
+
 	die(sides: Int!): Die
-	getPet(id: Int!): Pet
-	allPets: [Pet!]!
-	getmeal(time: String!): Meal
-	getTime: Time!
 	getRandom(range: Int!): Int!
 	getRoll(sides: Int!, rolls: Int!): Roll!
+
+	getPet(id: Int!): Pet
+	allPets: [Pet!]!
+	firstPet: Pet
+	lastPet: Pet
+
+	getmeal(time: String!): Meal
+	getTime: Time!
+	
 	Time: Time!
 }
 
@@ -57,15 +68,6 @@ type Mutation {
 	addPet(name: String!, species: String!): Pet!
 }
 `)
-
-
-// Mock up array for storing data
-
-const petList = [
-	{ name: 'Fluffy', species: 'Dog' },
-	{ name: 'Sassy', species: 'Cat' },
-	{ name: 'Goldberg', species: 'Frog' }
-]
 
 // Define a resolvers
 
