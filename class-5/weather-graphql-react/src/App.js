@@ -1,6 +1,6 @@
 import './App.css';
-import { useState, useEffect } from 'react'
-import { gql } from '@apollo/client';
+import { useState } from 'react'
+import { gql } from '@apollo/client'
 import { client } from './index'
 
 

@@ -1,4 +1,5 @@
 // Import dependancies
+require('dotenv').config()
 const express = require('express')
 const { graphqlHTTP } = require('express-graphql')
 const { buildSchema } = require('graphql')
@@ -32,7 +33,7 @@ type Query {
 
 const root = {
   getWeather: async ({ zip, units = 'imperial' }) => {
-		const apikey = '467355df4c808dd6134a3b64e9ace282'
+		const apikey = process.env.OPENWEATHERMAP_API_KEY
 		const url = `https://api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${apikey}&units=${units}`
 		const res = await fetch(url)
 		const json = await res.json()
@@ -59,7 +60,7 @@ const root = {
 
 // Create an express app
 const app = express()
-app.use(cors()); // use cors 
+// app.use(cors()); // use cors 
  
 // Define a route for GraphQL
 app.use('/graphql', graphqlHTTP({

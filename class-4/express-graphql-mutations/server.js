@@ -94,12 +94,8 @@ const root = {
 	allPets: () => {	
 		return petList
 	},
-	getTime: () => {
-		const now = new Date()
-		const hour = now.getHours()
-		const minute = now.getMinutes()
-		const second = now.getSeconds()
-		return { hour, minute, second }
+	getTime: function () {
+		return this.Time
 	},
 	getRandom: ({ range }) => {
 		return Math.floor(Math.random() * range) + 1
