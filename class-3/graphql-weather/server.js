@@ -60,7 +60,7 @@ const root = {
 
 // Create an express app
 const app = express()
-// app.use(cors()); // use cors 
+app.use(cors()); // use cors 
  
 // Define a route for GraphQL
 app.use('/graphql', graphqlHTTP({
