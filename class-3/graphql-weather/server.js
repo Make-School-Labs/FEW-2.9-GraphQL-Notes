@@ -3,7 +3,7 @@ require('dotenv').config()
 const express = require('express')
 const { graphqlHTTP } = require('express-graphql')
 const { buildSchema } = require('graphql')
-const cors = require( `cors` ); // install cors
+const cors = require('cors'); 
 
 const fetch = require('node-fetch') 
 
@@ -42,7 +42,7 @@ const root = {
 
 		console.log(json)
 
-		if (cod !== 200) {
+		if (cod !== 200) {   // !==  not equal to
 			return { cod, message }
 		}
 		
@@ -60,6 +60,7 @@ const root = {
 
 // Create an express app
 const app = express()
+
 app.use(cors()); // use cors 
  
 // Define a route for GraphQL

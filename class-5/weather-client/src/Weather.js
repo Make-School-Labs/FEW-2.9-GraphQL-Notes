@@ -1,11 +1,7 @@
-
 import './Weather.css';
-
 import { useState } from 'react'
-
 import { gql } from '@apollo/client';
 import { client } from './index'
-
 
 function Weather() {
   const [ zip, setZip ] = useState('')
@@ -50,3 +46,10 @@ function Weather() {
 }
 
 export default Weather
+
+
+
+
+
+
+
