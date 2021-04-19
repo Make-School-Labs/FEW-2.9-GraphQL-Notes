@@ -1,13 +1,24 @@
 import './App.css';
 import { useState } from 'react'
-import { gql } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 import { client } from './index'
 
+function App(props) {
+  const [zip, setZip] = useState('') 
+  const [weather, setWeather] = useState(null)
 
-async function fetchWeather(zip, setter) {
-  try {
-    // define a query
-    const json = await client.query({
+  async function fetchWeather(query) {
+    try {
+      // define a query
+      const json = await client.query(query)
+      return json
+    } catch(err) {
+      console.log(err.message)
+    }
+  }
+
+  async function fetchByZip() {
+    const json = await fetchWeather({
       query: gql`
         query {
           getWeather(zip:${zip}) {
@@ -17,27 +28,32 @@ async function fetchWeather(zip, setter) {
         }
       `
     })
-
     console.log(json)
-    setter(json)
-  } catch(err) {
-    console.log(err.message)
+    setWeather(json.data.getWeather)
   }
-}
 
-
-function App() {
-  const [zip, setZip] = useState('') 
-  const [weather, setWeather] = useState(null)
+  async function fetchByGeo(latitude, longitude) {
+    const json = await fetchWeather({ 
+      query: gql`
+        query {
+          getWeatherGeo(lat:${latitude}, lon: ${longitude}) {
+            temperature
+            description
+        }
+      }
+    `})
+    console.log(json)
+    setWeather(json.data.getWeatherGeo) 
+  }
 
   return (
     <div className="App">
       <header className="App-header">
-        {weather ? <h1>{weather.data.getWeather.temperature}</h1>: null}
+        {weather ? <h1>{weather.temperature}</h1>: null}
         <form
           onSubmit={(e) => {
             e.preventDefault()
-            fetchWeather(zip, setWeather)
+            fetchByZip()
           }}
         >
           <input
@@ -46,7 +62,33 @@ function App() {
             value={zip}
             onChange={(e) => setZip(e.target.value)}
           />
+
+          <button type="submit">Submit</button>
         </form>
+        <button
+          onClick={() => {
+              const options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+              };
+
+              function success(pos) {
+                const {latitude, longitude} = pos.coords;
+                // console.log('Your current position is:');
+                // console.log(`Latitude : ${latitude}`);
+                // console.log(`Longitude: ${longitude}`);
+                // console.log(`More or less ${crd.accuracy} meters.`);
+                fetchByGeo(latitude, longitude)
+              }
+
+              function error(err) {
+                console.warn(`ERROR(${err.code}): ${err.message}`);
+              }
+
+              navigator.geolocation.getCurrentPosition(success, error, options);
+          }}
+        >Get Geolocation</button>
       </header>
     </div>
   );

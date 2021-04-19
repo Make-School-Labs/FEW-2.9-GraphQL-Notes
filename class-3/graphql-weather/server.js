@@ -1,4 +1,14 @@
 // Import dependancies
+
+// https 
+const fs = require("fs");
+const https = require("https");
+const homedir = require('os').homedir();
+const key = fs.readFileSync(`${homedir}/localhost-key.pem`, 'utf-8');
+const cert = fs.readFileSync(`${homedir}/localhost.pem`, 'utf-8');
+
+
+
 require('dotenv').config()
 const express = require('express')
 const { graphqlHTTP } = require('express-graphql')
@@ -28,14 +38,12 @@ type Weather {
 
 type Query {
 	getWeather(zip: Int!, units: Units): Weather!
+	getWeatherGeo(lat: Float!, lon: Float!, units: Units): Weather!
 }
 `)
 
-const root = {
-  getWeather: async ({ zip, units = 'imperial' }) => {
-		const apikey = process.env.OPENWEATHERMAP_API_KEY
-		const url = `https://api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${apikey}&units=${units}`
-		const res = await fetch(url)
+async function getWeather(url) {
+	const res = await fetch(url)
 		const json = await res.json()
 		const cod = parseInt(json.cod)
 		const message = json.message
@@ -55,6 +63,20 @@ const root = {
 		const humidity = json.main.humidity
 
 		return { temperature, description, feels_like, temp_max, temp_min, pressure, humidity, cod, message }
+}
+
+const root = {
+  getWeather: async ({ zip, units = 'imperial' }) => {
+		const apikey = process.env.OPENWEATHERMAP_API_KEY
+		const url = `https://api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${apikey}&units=${units}`
+		return await getWeather(url)
+	}, 
+	getWeatherGeo: async ({ lat, lon, units = 'imperial' }) => {
+		const apikey = process.env.OPENWEATHERMAP_API_KEY
+		// api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}
+		const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apikey}&units=${units}`
+		console.log(url)
+		return await getWeather(url)
 	}
 }
 
@@ -72,6 +94,7 @@ app.use('/graphql', graphqlHTTP({
 
 // Start this app
 const port = 4000
-app.listen(port, () => {
-  console.log('Running on port:'+port)
-})
+// app.listen(port, () => {
+//   console.log('Running on port:'+port)
+// })
+https.createServer({ key, cert }, app).listen(port);
