@@ -7,7 +7,7 @@ const nameInput = document.querySelector('#name-input')
 let ws;
 
 function showMessage(data) {
-  messages.innerHTML += `<li>${data.name}:${data.message}</li>`
+  messages.innerHTML += `<li>${data.name}: ${data.message}</li>`
   messages.scrollTop = messages.scrollHeight
   messageInput.value = ''
 }
@@ -21,19 +21,15 @@ function init() {
 
   // Make a new Websocket
   ws = new WebSocket('ws://localhost:6969')
+
   // Handle the connection when it opens
-  ws.onopen = () => {
-    console.log('!Connection opened!')
-  }
+  ws.onopen = () => console.log('!Connection opened!')
+  
   // handle a message event
-  ws.onmessage = (e) => { 
-    console.log(e)
-    showMessage(JSON.parse(e.data))
-  }
+  ws.onmessage = (e) => showMessage(JSON.parse(e.data))
+  
   // Handle a close event
-  ws.onclose = function () {
-    ws = null
-  }
+  ws.onclose = () => ws = null
 }
 
 // Handle button clicks
