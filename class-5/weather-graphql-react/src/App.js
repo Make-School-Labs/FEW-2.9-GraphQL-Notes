@@ -74,16 +74,12 @@ function App(props) {
               };
 
               function success(pos) {
-                const {latitude, longitude} = pos.coords;
-                // console.log('Your current position is:');
-                // console.log(`Latitude : ${latitude}`);
-                // console.log(`Longitude: ${longitude}`);
-                // console.log(`More or less ${crd.accuracy} meters.`);
+                const { latitude, longitude } = pos.coords;
                 fetchByGeo(latitude, longitude)
               }
 
               function error(err) {
-                console.warn(`ERROR(${err.code}): ${err.message}`);
+                console.log(`ERROR(${err.code}): ${err.message}`);
               }
 
               navigator.geolocation.getCurrentPosition(success, error, options);

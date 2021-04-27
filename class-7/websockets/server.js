@@ -31,3 +31,21 @@ wss.on('connection', (ws) => {
 server.listen(port, () => {
   console.log(`Server is listening on ${port}!`)
 })
+
+
+// const obj = { 
+//   a: 11,  // A property 
+//   b: 222, 
+//   c: function () { 
+//     console.log('hello') 
+//   } 
+// }
+// console.log(obj.a) // 11
+// obj.c() // hello
+// const json = JSON.stringify(obj)  // turn into string 
+// // '{ "a": 11, "b": 222 }'
+// // string, array, obj, number, true/false, null 
+// json.a // error cannot access property a of string 
+
+// const newObj = JSON.parse(json)
+
